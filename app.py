@@ -44,10 +44,13 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        sql = "SELECT password_hash FROM users WHERE username = ?"
-        password_hash = db.query(sql, [username])[0][0]
+        sql = "SELECT id, password_hash FROM users WHERE username = ?"
+        result = db.query(sql, [username])[0]
+        user_id = result["id"]
+        password_hash = result["password_hash"]
 
         if check_password_hash(password_hash, password):
+            session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
@@ -56,4 +59,24 @@ def login():
 @app.route("/logout")
 def logout():
     del session["username"]
+    del session["user_id"]
     return redirect("/")
+
+# Add new recipe
+@app.route("/new_recipe")
+def new_recipe():
+    return render_template("new_recipe.html")
+
+@app.route("/create_recipe", methods=["POST"])
+def create_recipe():
+    title = request.form["title"]
+    description = request.form["description"]
+    user_id = session["user_id"]
+
+    try:
+        sql = "INSERT INTO recipes (title, description, user_id) VALUES (?, ?, ?)"
+        db.execute(sql, [title, description, user_id])
+    except sqlite3.IntegrityError:
+        return "VIRHE: nimellä on jo resepti"
+
+    return 'Uusi resepti luotu <a href="/">Palaa alkuun</a>'
