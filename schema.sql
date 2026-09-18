@@ -8,5 +8,6 @@ CREATE TABLE recipes (
     id INTEGER PRIMARY KEY,
     title TEXT,
     description TEXT,
+    ingredients LIST,
     user_id INTEGER REFERENCES users
 );

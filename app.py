@@ -11,7 +11,13 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    all_recipes = recipes.get_recipes()
+    return render_template("index.html", recipes=all_recipes)
+
+@app.route("/recipe/<int:recipe_id>")
+def show_recipe(recipe_id):
+    recipe = recipes.get_recipe(recipe_id)
+    return render_template("show_recipe.html", recipe=recipe)
 
 # User registeration
 @app.route("/register")
@@ -74,6 +80,6 @@ def create_recipe():
     description = request.form["description"]
     user_id = session["user_id"]
 
-    recipes.add_recipe(title, description, user_id)
+    recipes.add_recipe(title, description, user_id, None)
 
     return 'Uusi resepti luotu <a href="/">Palaa alkuun</a>'
