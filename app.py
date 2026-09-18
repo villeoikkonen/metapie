@@ -4,6 +4,7 @@ from flask import redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import db
+import recipes
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -73,10 +74,6 @@ def create_recipe():
     description = request.form["description"]
     user_id = session["user_id"]
 
-    try:
-        sql = "INSERT INTO recipes (title, description, user_id) VALUES (?, ?, ?)"
-        db.execute(sql, [title, description, user_id])
-    except sqlite3.IntegrityError:
-        return "VIRHE: nimellä on jo resepti"
+    recipes.add_recipe(title, description, user_id)
 
     return 'Uusi resepti luotu <a href="/">Palaa alkuun</a>'
