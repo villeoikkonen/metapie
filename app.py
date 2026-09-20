@@ -69,6 +69,16 @@ def logout():
     del session["user_id"]
     return redirect("/")
 
+@app.route("/find_recipe")
+def find_recipe():
+    query = request.args.get("query")
+    if query:
+        results = recipes.find_recipe(query)
+    else:
+        query = ""
+        results = []
+    return render_template("find_recipe.html", query=query, results=results)
+
 # Add new recipe
 @app.route("/new_recipe")
 def new_recipe():
@@ -86,9 +96,7 @@ def update_recipe():
     title = request.form["title"]
     description = request.form["description"]
     user_id = session["user_id"]
-
     recipes.update_recipe(recipe_id, title, description, None)
-
     return redirect("/recipe/" + str(recipe_id))
 
 # Remove recipe
