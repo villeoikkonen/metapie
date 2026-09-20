@@ -74,6 +74,24 @@ def logout():
 def new_recipe():
     return render_template("new_recipe.html")
 
+# Edit existing recipe
+@app.route("/edit_recipe/<int:recipe_id>")
+def edit_recipe(recipe_id):
+    recipe = recipes.get_recipe(recipe_id)
+    return render_template("edit_recipe.html", recipe=recipe)
+
+@app.route("/update_recipe", methods=["POST"])
+def update_recipe():
+    recipe_id = request.form["recipe_id"]
+    title = request.form["title"]
+    description = request.form["description"]
+    user_id = session["user_id"]
+
+    recipes.update_recipe(recipe_id, title, description, None)
+
+    return redirect("/recipe/" + str(recipe_id))
+
+# Create a new recipe
 @app.route("/create_recipe", methods=["POST"])
 def create_recipe():
     title = request.form["title"]
