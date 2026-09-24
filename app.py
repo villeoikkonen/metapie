@@ -32,21 +32,22 @@ def register():
 
 @app.route("/create", methods=["POST"])
 def create():
-    require_login()
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
     if password1 != password2:
-        return "VIRHE: salasanat eivät ole samat"
+        error_msg = "VIRHE: salasanat eivät ole samat"
+        return render_template("/register.html", error_msg=error_msg)
     password_hash = generate_password_hash(password1)
 
     try:
         sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
         db.execute(sql, [username, password_hash])
     except sqlite3.IntegrityError:
-        return "VIRHE: tunnus on jo varattu"
+        error_msg = "VIRHE: tunnus on jo varattu"
+        return render_template("/register.html", error_msg=error_msg)
 
-    return "Tunnus luotu"
+    return redirect("/")
 
 # Login
 @app.route("/login", methods=["GET", "POST"])
@@ -140,7 +141,6 @@ def remove_recipe(recipe_id):
             return redirect("/")
         else:
             return redirect("/recipe/" + str(recipe_id))
-
 
 # Create a new recipe
 @app.route("/create_recipe", methods=["POST"])

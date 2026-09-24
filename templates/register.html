@@ -5,6 +5,10 @@
   <title>Rekisteröinti</title>
 </head>
 
+{% if error_msg %}
+<p>{{ error_msg }}</p>
+{% endif %}
+
 <body>
   <form action="/create" method="post">
     <p>
@@ -20,6 +24,7 @@
       <input type="password" name="password2" />
     </p>
     <input type="submit" value="Luo tunnus" />
+    <a href="/"><input type="button" value="Peruuta" /></a>
   </form>
 </body>
 
