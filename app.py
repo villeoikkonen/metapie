@@ -143,9 +143,11 @@ def remove_recipe(recipe_id):
 def create_recipe():
     require_login()
     title = request.form["title"]
+    if not title or len(title) > 50:
+        abort(403)
     description = request.form["description"]
+    if not description or len(description) > 1000:
+        abort(403)
     user_id = session["user_id"]
-
     recipes.add_recipe(title, description, user_id, None)
-
-    return 'Uusi resepti luotu <a href="/">Palaa alkuun</a>'
+    return redirect("/")
