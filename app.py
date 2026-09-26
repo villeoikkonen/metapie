@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import db
 import recipes
+import users
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -30,6 +31,7 @@ def show_recipe(recipe_id):
 def register():
     return render_template("register.html")
 
+# Create new user
 @app.route("/create", methods=["POST"])
 def create():
     username = request.form["username"]
@@ -38,11 +40,9 @@ def create():
     if password1 != password2:
         error_msg = "VIRHE: salasanat eivät ole samat"
         return render_template("/register.html", error_msg=error_msg)
-    password_hash = generate_password_hash(password1)
 
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        users.create_user(username, password1)
     except sqlite3.IntegrityError:
         error_msg = "VIRHE: tunnus on jo varattu"
         return render_template("/register.html", error_msg=error_msg)
@@ -59,17 +59,15 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        sql = "SELECT id, password_hash FROM users WHERE username = ?"
-        result = db.query(sql, [username])[0]
-        user_id = result["id"]
-        password_hash = result["password_hash"]
+        user_id = users.check_login(username, password)
 
-        if check_password_hash(password_hash, password):
+        if user_id:
             session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
-            return "VIRHE: väärä tunnus tai salasana"
+            error_msg = "VIRHE: väärä tunnus tai salasana"
+            return render_template("/login.html", error_msg=error_msg)
 
 @app.route("/logout")
 def logout():
