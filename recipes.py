@@ -1,12 +1,22 @@
 import db
 
-def add_recipe(title, description, user_id, ingredients):
-    sql = "INSERT INTO recipes (title, description, user_id, ingredients) VALUES (?, ?, ?, ?)"
-    db.execute(sql, [title, description, user_id, ingredients])
+def add_recipe(title, description, user_id, classes):
+    sql = "INSERT INTO recipes (title, description, user_id) VALUES (?, ?, ?)"
+    db.execute(sql, [title, description, user_id])
+
+    recipe_id = db.last_insert_id()
+
+    sql = "INSERT INTO recipe_classes (recipe_id, title, value) VALUES (?, ?, ?)"
+    for title, value in classes:
+        db.execute(sql, [recipe_id, title, value])
 
 def get_recipes():
     sql = "SELECT id, title FROM recipes ORDER BY id DESC"
     return db.query(sql)
+
+def get_classes(recipe_id):
+    sql = "SELECT title, value FROM recipe_classes WHERE recipe_id = ?"
+    return db.query(sql, [recipe_id])
 
 def get_recipe(recipe_id):
     sql = """SELECT recipes.title,
@@ -21,7 +31,7 @@ def get_recipe(recipe_id):
     result = db.query(sql, [recipe_id])
     return result[0] if result else None
 
-def update_recipe(recipe_id, title, description, ingredients):
+def update_recipe(recipe_id, title, description, classes):
     sql = """UPDATE recipes SET title = ?,
                                 description = ?
                             WHERE id = ?"""

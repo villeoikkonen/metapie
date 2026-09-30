@@ -22,7 +22,8 @@ def show_recipe(recipe_id):
     recipe = recipes.get_recipe(recipe_id)
     if not recipe:
         abort(404)
-    return render_template("show_recipe.html", recipe=recipe)
+    classes = recipes.get_classes(recipe_id)
+    return render_template("show_recipe.html", recipe=recipe, classes=classes)
 
 # User registeration
 @app.route("/register")
@@ -157,5 +158,13 @@ def create_recipe():
     if not description or len(description) > 1000:
         abort(403)
     user_id = session["user_id"]
-    recipes.add_recipe(title, description, user_id, None)
+
+    classes = []
+    diet = request.form["diet"]
+    if diet:
+        classes.append(("Ruokavalio", diet))
+    food_type = request.form["type"]
+    if food_type:
+        classes.append(("Ruokalaji", food_type))
+    recipes.add_recipe(title, description, user_id, classes)
     return redirect("/")
