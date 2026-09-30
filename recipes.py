@@ -22,7 +22,6 @@ def get_recipe(recipe_id):
     sql = """SELECT recipes.title,
                     recipes.id,
                     recipes.description,
-                    recipes.ingredients,
                     users.username,
                     users.id user_id
              FROM recipes, users
