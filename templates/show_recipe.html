@@ -18,4 +18,7 @@
 <p>
   {{ recipe.ingredients }}
 </p>
+<p>
+  Reseptin tekijä: <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a>
+</p>
 {% endblock %}

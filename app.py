@@ -29,6 +29,14 @@ def show_recipe(recipe_id):
 def register():
     return render_template("register.html")
 
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
+    if not user:
+        abort(404)
+    recipes = users.get_items(user_id)
+    return render_template("show_user.html", user=user, recipes=recipes)
+
 # Create new user
 @app.route("/create", methods=["POST"])
 def create():
