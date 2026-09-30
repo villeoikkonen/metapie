@@ -103,7 +103,8 @@ def find_recipe():
 @app.route("/new_recipe")
 def new_recipe():
     require_login()
-    return render_template("new_recipe.html")
+    classes = recipes.get_all_classes()
+    return render_template("new_recipe.html", classes=classes)
 
 # Edit existing recipe
 @app.route("/edit_recipe/<int:recipe_id>")
@@ -166,11 +167,9 @@ def create_recipe():
     user_id = session["user_id"]
 
     classes = []
-    diet = request.form["diet"]
-    if diet:
-        classes.append(("Ruokavalio", diet))
-    food_type = request.form["type"]
-    if food_type:
-        classes.append(("Ruokalaji", food_type))
+    for entry in request.form.getlist("classes"):
+        if entry:
+            parts = entry.split(":")
+            classes.append((parts[0], parts[1]))
     recipes.add_recipe(title, description, user_id, classes)
     return redirect("/")

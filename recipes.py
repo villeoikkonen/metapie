@@ -14,6 +14,16 @@ def get_recipes():
     sql = "SELECT id, title FROM recipes ORDER BY id DESC"
     return db.query(sql)
 
+def get_all_classes():
+    sql = "SELECT title, value FROM classes ORDER BY id"
+    result = db.query(sql)
+    classes = {}
+    for title, value in result:
+        if title not in classes:
+            classes[title] = []
+        classes[title].append(value)
+    return classes
+
 def get_classes(recipe_id):
     sql = "SELECT title, value FROM recipe_classes WHERE recipe_id = ?"
     return db.query(sql, [recipe_id])
