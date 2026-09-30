@@ -47,6 +47,12 @@ def create():
     if password1 != password2:
         error_msg = "VIRHE: salasanat eivät ole samat"
         return render_template("/register.html", error_msg=error_msg)
+    if not password1.strip():
+        error_msg = "VIRHE: epäkelpo salasana, salasana ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä."
+        return render_template("/register.html", error_msg=error_msg)
+    elif len(password1) < 5:
+        error_msg = "VIRHE: epäkelpo salasana, salasanan on oltava vähintään 5 merkkiä pitkä."
+        return render_template("/register.html", error_msg=error_msg)
 
     try:
         users.create_user(username, password1)
