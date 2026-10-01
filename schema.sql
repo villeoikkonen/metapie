@@ -31,3 +31,11 @@ CREATE TABLE ingredients (
     unit TEXT,
     recipe_id INTEGER REFERENCES recipes ON DELETE CASCADE
 );
+
+CREATE TABLE recipe_votes (
+    id INTEGER PRIMARY KEY,
+    recipe_id INTEGER REFERENCES recipes ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users ON DELETE CASCADE,
+    vote INTEGER CHECK (vote IN (-1, 1)),
+    UNIQUE (recipe_id, user_id)
+);

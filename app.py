@@ -23,7 +23,10 @@ def show_recipe(recipe_id):
     if not recipe:
         abort(404)
     classes = recipes.get_classes(recipe_id)
-    return render_template("show_recipe.html", recipe=recipe, classes=classes)
+    user_vote = None
+    if "user_id" in session:
+        user_vote = recipes.get_vote(recipe_id, session["user_id"])
+    return render_template("show_recipe.html", recipe=recipe, classes=classes, user_vote=user_vote)
 
 # User registeration
 @app.route("/register")
@@ -198,3 +201,24 @@ def create_recipe():
             classes.append((class_title, class_value))
     recipes.add_recipe(title, description, user_id, classes)
     return redirect("/")
+
+@app.route("/vote_recipe", methods=["POST"])
+def vote_recipe():
+    require_login()
+
+    recipe_id = request.form["recipe_id"]
+    recipe = recipes.get_recipe(recipe_id)
+    if not recipe:
+        abort(403)
+
+    vote = request.form["vote"]
+    if vote not in ["1", "-1"]:
+        if vote == "0":
+            recipes.remove_vote(recipe_id, session["user_id"])
+            return redirect("/recipe/" + str(recipe_id))
+        else:
+            abort(400)
+
+    recipes.add_vote(recipe_id, session["user_id"], int(vote))
+
+    return redirect("/recipe/" + str(recipe_id))

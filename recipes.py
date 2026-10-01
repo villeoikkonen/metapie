@@ -10,6 +10,25 @@ def add_recipe(title, description, user_id, classes):
     for title, value in classes:
         db.execute(sql, [recipe_id, title, value])
 
+def add_vote(recipe_id, user_id, vote):
+    sql = "INSERT INTO recipe_votes (recipe_id, user_id, vote) VALUES (?, ?, ?)"
+    db.execute(sql, [recipe_id, user_id, vote])
+
+def get_vote(recipe_id, user_id):
+    sql = """SELECT vote
+             FROM recipe_votes
+             WHERE recipe_id = ? AND user_id = ?"""
+    result = db.query(sql, [recipe_id, user_id])
+
+    if not result:
+        return None
+
+    return result[0]["vote"]
+
+def remove_vote(recipe_id, user_id):
+    sql = "DELETE FROM recipe_votes WHERE recipe_id = ? AND user_id = ?"
+    db.execute(sql, [recipe_id, user_id])
+
 def get_recipes():
     sql = "SELECT id, title FROM recipes ORDER BY id DESC"
     return db.query(sql)

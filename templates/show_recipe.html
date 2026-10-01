@@ -30,6 +30,26 @@
   {{ recipe.ingredients }}
 </p>
 {% endif %}
+{% if session.user_id %}
+  <h2>Lisää lemppariksi / inhokiksi</h2>
+
+  <form action="/vote_recipe" method="post">
+    <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+
+    {% if user_vote == 1 %}
+      <p>👍 Olet lisännyt reseptin lemppariksi.</p>
+      <button type="submit" name="vote" value="0">En tykkääkään</button>
+
+    {% elif user_vote == -1 %}
+      <p>👎 Olet lisännyt reseptin inhokiksi.</p>
+      <button type="submit" name="vote" value="0">En inhoakaan</button>
+
+    {% else %}
+      <button type="submit" name="vote" value="1">👍 nam!</button>
+      <button type="submit" name="vote" value="-1">👎 hyi!</button>
+    {% endif %}
+  </form>
+{% endif %}
 <p>
   Reseptin tekijä: <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a>
 </p>
