@@ -6,8 +6,17 @@
 
 <h2>Käyttäjä {{ user.username }}</h2>
 <p>
-    Käyttäjällä on yhteensä {{ recipes | count }} ilmoitusta.
+    Käyttäjällä on yhteensä {{ recipes | count }} reseptiä.
 </p>
+{% if votes | count > 0 %}
+<p>
+    Yhteensä {{ votes | count }} arviota<br>
+    👍 Tykkäyksiä: {{ votes | selectattr("vote", "equalto", 1) | list | count }}<br>
+    👎 Inhokkeja: {{ votes | selectattr("vote", "equalto", -1) | list | count }}
+</p>
+{% else %}
+    Käyttäjän resepteillä ei ole yhtään tykkäystä.
+{% endif %}
 <h2>Reseptit</h2>
 <ul>
     {% for recipe in recipes %}

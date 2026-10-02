@@ -38,8 +38,9 @@ def show_user(user_id):
     user = users.get_user(user_id)
     if not user:
         abort(404)
-    recipes = users.get_items(user_id)
-    return render_template("show_user.html", user=user, recipes=recipes)
+    user_recipes = users.get_items(user_id)
+    user_votes = recipes.get_votes(user_id)
+    return render_template("show_user.html", user=user, recipes=user_recipes, votes=user_votes)
 
 # Create new user
 @app.route("/create", methods=["POST"])
