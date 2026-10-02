@@ -1,17 +1,17 @@
 # Metapie - reseptikirja mikä vähentää waifun metatyötä. Happy wife, happy life.
 
-*  Sovelluksessa käyttäjät pystyvät jakamaan ruokareseptejään. Reseptissä lukee tarvittavat ainekset ja valmistusohje (Ainesluettelo ei vielä valmis).
+*  Sovelluksessa käyttäjät pystyvät jakamaan ruokareseptejään.
+*  (TODO) Resepteihin pystyy lisäämään raaka-aineita.
 *  Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
 *  Käyttäjä pystyy lisäämään reseptejä ja muokkaamaan ja poistamaan niitä.
 *  Käyttäjä näkee sovellukseen lisätyt reseptit.
 *  Käyttäjä pystyy etsimään reseptejä hakusanalla.
-*  Käyttäjä pystyy valitsemaan esimerkiksi seuraavia luokitteluja: (ei vielä valmis)
+*  Käyttäjä pystyy valitsemaan esimerkiksi seuraavia luokitteluja:
     Ruoan tyyppi: alkuruoka, pääruoka tai jälkiruoka
-    Ruokavalio: laktoositon, gluteeniton tai vegaaninen
-    Monellekko aterialle valmistettu ruoka riittää
-*  Käyttäjä pystyy luomaan viikottaisen ruokalistan. (ei vielä valmis)
-*  Ruokia voi luokitella herkkuruoaksi tai inhoksi, jolloin niiden todennäköisyys päätyä sattumanvaraiselle listalle muuttuu. (ei vielä valmis)
-*  Käyttäjä saa ruokalistan perusteella itselleen kauppalistan tarvittavista aineksista. (ei vielä valmis)
+    Ruokavalio: laktoositon, gluteeniton, vegaaninen tai halal
+*  (TODO) Käyttäjä pystyy luomaan viikottaisen ruokalistan.
+*  Käyttäjä voi tykätä resepteistä.
+*  (TODO) Käyttäjä saa ruokalistan perusteella itselleen kauppalistan tarvittavista aineksista.
 
 ## Asennus ja käynnistys
 
@@ -44,6 +44,7 @@ Suorita tämä vain ensimmäisellä asennuskerralla:
 
 ```bash
 sqlite3 database.db < schema.sql
+sqlite3 database.db < init.sql
 ```
 
 ### 5. Käynnistä sovellus
@@ -65,3 +66,14 @@ Siirry projektin kansioon ja suorita:
 source .venv/bin/activate
 python -m flask run
 ```
+
+## Sovelluksen testaaminen
+
+1. Luo käyttäjätunnus ja kirjaudu sisään.
+2. Lisää resepti ja valitse sille ruokavalio ja ruokalaji.
+3. Kokeile reseptin hakemista, muokkaamista ja käyttäjäsivun avaamista.
+4. Kirjaudu ulos ja luo toinen käyttäjätunnus.
+5. Arvioi ensimmäisen käyttäjän resepti tykkäykseksi tai inhokiksi.
+6. Tarkista reseptin arviomäärät ja oman käyttäjäsivusi tilastot.
+7. Kokeile arvion poistamista.
+8. Kirjaudu alkuperäisellä tunnuksella ja kokeile reseptin poistamista.
