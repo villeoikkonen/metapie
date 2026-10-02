@@ -9,6 +9,7 @@ def add_recipe(title, description, user_id, classes):
     sql = "INSERT INTO recipe_classes (recipe_id, title, value) VALUES (?, ?, ?)"
     for title, value in classes:
         db.execute(sql, [recipe_id, title, value])
+        return recipe_id
 
 def add_vote(recipe_id, user_id, vote):
     sql = "INSERT INTO recipe_votes (recipe_id, user_id, vote) VALUES (?, ?, ?)"

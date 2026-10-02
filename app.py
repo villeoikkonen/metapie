@@ -216,9 +216,8 @@ def create_recipe():
             if class_value not in all_classes[class_title]:
                 abort(403)
             classes.append((class_title, class_value))
-    recipes.add_recipe(title, description, user_id, classes)
+    recipe_id = recipes.add_recipe(title, description, user_id, classes)
 
-    recipe_id = db.last_insert_id()
     return redirect("/recipe/" + str(recipe_id))
 
 # Vote recipe

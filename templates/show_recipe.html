@@ -12,7 +12,8 @@
 </p>
 {% endif %}
 <p>
-  👍 +{{ recipe_votes | selectattr("vote", "equalto", 1) | list | count }} | 👎 -{{ recipe_votes | selectattr("vote", "equalto", -1) | list | count }}
+  👍 +{{ recipe_votes | selectattr("vote", "equalto", 1) | list | count }} | 
+  👎 -{{ recipe_votes | selectattr("vote", "equalto", -1) | list | count }}
 </p>
 <p>
   {{ recipe.description }}
