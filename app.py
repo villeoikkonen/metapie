@@ -24,9 +24,10 @@ def show_recipe(recipe_id):
         abort(404)
     classes = recipes.get_classes(recipe_id)
     user_vote = None
+    recipe_votes = recipes.get_recipe_votes(recipe_id)
     if "user_id" in session:
         user_vote = recipes.get_vote(recipe_id, session["user_id"])
-    return render_template("show_recipe.html", recipe=recipe, classes=classes, user_vote=user_vote)
+    return render_template("show_recipe.html", recipe=recipe, classes=classes, user_vote=user_vote, recipe_votes=recipe_votes)
 
 # User registeration
 @app.route("/register")
@@ -39,7 +40,7 @@ def show_user(user_id):
     if not user:
         abort(404)
     user_recipes = users.get_items(user_id)
-    user_votes = recipes.get_votes(user_id)
+    user_votes = recipes.get_user_votes(user_id)
     return render_template("show_user.html", user=user, recipes=user_recipes, votes=user_votes)
 
 # Create new user

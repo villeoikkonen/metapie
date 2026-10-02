@@ -10,12 +10,12 @@
 </p>
 {% if votes | count > 0 %}
 <p>
-    Yhteensä {{ votes | count }} arviota<br>
+    Käyttäjä on antanut yhteensä {{ votes | count }} arviota<br>
     👍 Tykkäyksiä: {{ votes | selectattr("vote", "equalto", 1) | list | count }}<br>
     👎 Inhokkeja: {{ votes | selectattr("vote", "equalto", -1) | list | count }}
 </p>
 {% else %}
-    Käyttäjän resepteillä ei ole yhtään tykkäystä.
+    Käyttäjä ei ole antanut yhtään tykkäystä.
 {% endif %}
 <h2>Reseptit</h2>
 <ul>
