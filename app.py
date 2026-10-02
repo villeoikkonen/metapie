@@ -68,6 +68,9 @@ def create():
         return render_template("/register.html", error_msg=error_msg)
 
     try:
+        if not username.strip():
+            error_msg = "VIRHE: epäkelpo käyttäjänimi, käyttäjänimi ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä."
+            return render_template("/register.html", error_msg=error_msg)
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
         error_msg = "VIRHE: tunnus on jo varattu"
@@ -198,7 +201,7 @@ def create_recipe():
     require_login()
     check_csrf()
     title = request.form["title"]
-    if not title or len(title) > 50:
+    if not title.strip() or len(title) > 50:
         abort(403)
     description = request.form["description"]
     if not description or len(description) > 1000:
@@ -216,7 +219,10 @@ def create_recipe():
             if class_value not in all_classes[class_title]:
                 abort(403)
             classes.append((class_title, class_value))
+
     recipe_id = recipes.add_recipe(title, description, user_id, classes)
+    if recipe_id == None:
+        recipe_id = db.last_insert_id()
 
     return redirect("/recipe/" + str(recipe_id))
 
