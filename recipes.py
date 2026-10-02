@@ -36,7 +36,21 @@ def remove_vote(recipe_id, user_id):
     db.execute(sql, [recipe_id, user_id])
 
 def get_recipes():
-    sql = "SELECT id, title FROM recipes ORDER BY id DESC"
+    sql = """SELECT recipes.id,
+                    recipes.title,
+                    users.id user_id,
+                    users.username,
+                    (SELECT COUNT(*)
+                     FROM recipe_votes
+                     WHERE recipe_votes.recipe_id = recipes.id
+                       AND vote = 1) AS likes,
+                    (SELECT COUNT(*)
+                     FROM recipe_votes
+                     WHERE recipe_votes.recipe_id = recipes.id
+                       AND vote = -1) AS dislikes
+             FROM recipes, users
+             WHERE recipes.user_id = users.id
+             ORDER BY recipes.id DESC"""
     return db.query(sql)
 
 def get_all_classes():
