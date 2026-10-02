@@ -1,3 +1,4 @@
+import secrets
 import sqlite3
 from flask import Flask
 from flask import abort, redirect, render_template, request, session
@@ -12,11 +13,16 @@ def require_login():
     if "user_id" not in session:
         abort(403)
 
+def check_csrf():
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
+
 @app.route("/")
 def index():
     all_recipes = recipes.get_recipes()
     return render_template("index.html", recipes=all_recipes)
 
+#Show recipe page
 @app.route("/recipe/<int:recipe_id>")
 def show_recipe(recipe_id):
     recipe = recipes.get_recipe(recipe_id)
@@ -34,6 +40,7 @@ def show_recipe(recipe_id):
 def register():
     return render_template("register.html")
 
+# Show user page
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
     user = users.get_user(user_id)
@@ -82,11 +89,13 @@ def login():
         if user_id:
             session["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             error_msg = "VIRHE: väärä tunnus tai salasana"
             return render_template("/login.html", error_msg=error_msg)
 
+# Logout
 @app.route("/logout")
 def logout():
     require_login()
@@ -94,6 +103,7 @@ def logout():
     del session["user_id"]
     return redirect("/")
 
+# Find recipe
 @app.route("/find_recipe")
 def find_recipe():
     query = request.args.get("query")
@@ -130,9 +140,11 @@ def edit_recipe(recipe_id):
 
     return render_template("edit_recipe.html", recipe=recipe, all_classes=all_classes, classes=classes)
 
+# Update recipe
 @app.route("/update_recipe", methods=["POST"])
 def update_recipe():
     require_login()
+    check_csrf()
     recipe_id = request.form["recipe_id"]
     recipe = recipes.get_recipe(recipe_id)
     if not recipe:
@@ -172,6 +184,7 @@ def remove_recipe(recipe_id):
     if request.method == "GET":
         return render_template("remove_recipe.html", recipe=recipe)
     if request.method == "POST":
+        check_csrf()
         if "remove" in request.form:
             recipes.remove_recipe(recipe_id)
             return redirect("/")
@@ -182,6 +195,7 @@ def remove_recipe(recipe_id):
 @app.route("/create_recipe", methods=["POST"])
 def create_recipe():
     require_login()
+    check_csrf()
     title = request.form["title"]
     if not title or len(title) > 50:
         abort(403)
@@ -204,10 +218,11 @@ def create_recipe():
     recipes.add_recipe(title, description, user_id, classes)
     return redirect("/")
 
+# Vote recipe
 @app.route("/vote_recipe", methods=["POST"])
 def vote_recipe():
     require_login()
-
+    check_csrf()
     recipe_id = request.form["recipe_id"]
     recipe = recipes.get_recipe(recipe_id)
     if not recipe:

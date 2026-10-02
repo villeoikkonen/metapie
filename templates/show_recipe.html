@@ -38,6 +38,7 @@
 
   <form action="/vote_recipe" method="post">
     <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
 
     {% if user_vote == 1 %}
       <p>👍 Olet lisännyt reseptin lemppariksi.</p>
