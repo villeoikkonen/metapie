@@ -2,6 +2,7 @@ import secrets
 import sqlite3
 from flask import Flask
 from flask import abort, redirect, render_template, request, session
+import db
 import config
 import recipes
 import users
@@ -216,7 +217,9 @@ def create_recipe():
                 abort(403)
             classes.append((class_title, class_value))
     recipes.add_recipe(title, description, user_id, classes)
-    return redirect("/")
+
+    recipe_id = db.last_insert_id()
+    return redirect("/recipe/" + str(recipe_id))
 
 # Vote recipe
 @app.route("/vote_recipe", methods=["POST"])
