@@ -24,6 +24,11 @@ def get_vote(recipe_id, user_id):
         return None
     return result[0]["vote"]
 
+def count_recipes():
+    sql = "SELECT COUNT(*) AS total FROM recipes"
+    result = db.query(sql)
+    return result[0]["total"]
+
 def get_user_votes(user_id):
     sql = "SELECT id, recipe_id, user_id, vote FROM recipe_votes WHERE user_id = ?"
     return db.query(sql, [user_id])

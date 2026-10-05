@@ -3,14 +3,17 @@
 {% block title %}Metapie{% endblock %}
 
 {% block content %}
-<h2>Reseptit</h2>
-
-{% for recipe in recipes %}
-<div class="recipe">
-  <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a> 👍 +{{ recipe.likes }} | 👎 -{{ recipe.dislikes }} <br />
-  Lisääjä: <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a><br />
-  
-</div>
-{% endfor %}
-
+<h2>Tervetuloa</h2>
+<p>
+  Tervetuloa Metapie-sivustolle! <br />
+  Sivut ovat kehityksen alla ja niitä päivitetään jatkuvasti. <br />
+  Jos havaitset virheitä tai kehitysehdotuksia, ota yhteyttä sivuston ylläpitäjään. <br>
+  Kiitos :)
+</p>
+<p>
+  Sivustolla on {{ user_count }} käyttäjää
+</p>
+<p>
+  Sivustolle on ladattu {{ recipe_count }} reseptiä
+</p>
 {% endblock %}

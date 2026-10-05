@@ -20,10 +20,19 @@ def check_csrf():
 
 @app.route("/")
 def index():
-    all_recipes = recipes.get_recipes()
-    return render_template("index.html", recipes=all_recipes)
+    user_count = users.count_users()
+    recipe_count = recipes.count_recipes()
+    return render_template("index.html", 
+                           user_count=user_count, recipe_count=recipe_count
+                           )
 
-#Show recipe page
+# Show all recipes page
+@app.route("/recipes")
+def show_recipes():
+    all_recipes = recipes.get_recipes()
+    return render_template("recipes.html", recipes=all_recipes)
+
+# Show recipe page
 @app.route("/recipe/<int:recipe_id>")
 def show_recipe(recipe_id):
     recipe = recipes.get_recipe(recipe_id)
@@ -34,7 +43,8 @@ def show_recipe(recipe_id):
     recipe_votes = recipes.get_recipe_votes(recipe_id)
     if "user_id" in session:
         user_vote = recipes.get_vote(recipe_id, session["user_id"])
-    return render_template("show_recipe.html", recipe=recipe, classes=classes, user_vote=user_vote, recipe_votes=recipe_votes)
+    return render_template("show_recipe.html", 
+                           recipe=recipe, classes=classes, user_vote=user_vote, recipe_votes=recipe_votes)
 
 # User registeration
 @app.route("/register")

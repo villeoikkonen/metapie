@@ -25,3 +25,8 @@ def get_user(user_id):
 def get_items(user_id):
     sql = "SELECT id, title FROM recipes WHERE user_id=? ORDER BY id DESC"
     return db.query(sql, [user_id])
+
+def count_users():
+    sql = "SELECT COUNT(*) AS total FROM users"
+    result = db.query(sql)
+    return result[0]["total"]
