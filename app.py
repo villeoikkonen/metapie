@@ -22,7 +22,7 @@ def check_csrf():
 def index():
     user_count = users.count_users()
     recipe_count = recipes.count_recipes()
-    return render_template("index.html", 
+    return render_template("index.html",
                            user_count=user_count, recipe_count=recipe_count
                            )
 
@@ -43,8 +43,10 @@ def show_recipe(recipe_id):
     recipe_votes = recipes.get_recipe_votes(recipe_id)
     if "user_id" in session:
         user_vote = recipes.get_vote(recipe_id, session["user_id"])
-    return render_template("show_recipe.html", 
-                           recipe=recipe, classes=classes, user_vote=user_vote, recipe_votes=recipe_votes)
+    return render_template("show_recipe.html",
+                           recipe=recipe, classes=classes,
+                           user_vote=user_vote, recipe_votes=recipe_votes
+                           )
 
 # User registeration
 @app.route("/register")
@@ -59,7 +61,8 @@ def show_user(user_id):
         abort(404)
     user_recipes = users.get_items(user_id)
     user_votes = recipes.get_user_votes(user_id)
-    return render_template("show_user.html", user=user, recipes=user_recipes, votes=user_votes)
+    return render_template("show_user.html",
+                           user=user, recipes=user_recipes, votes=user_votes )
 
 # Create new user
 @app.route("/create", methods=["POST"])
@@ -152,7 +155,9 @@ def edit_recipe(recipe_id):
     for entry in recipes.get_classes(recipe_id):
         classes[entry["title"]] = entry["value"]
 
-    return render_template("edit_recipe.html", recipe=recipe, all_classes=all_classes, classes=classes)
+    return render_template("edit_recipe.html", recipe=recipe,
+                           all_classes=all_classes, classes=classes
+                           )
 
 # Update recipe
 @app.route("/update_recipe", methods=["POST"])
