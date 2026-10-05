@@ -1,5 +1,6 @@
 import secrets
 import sqlite3
+import markupsafe
 from flask import Flask
 from flask import abort, redirect, render_template, request, session
 import db
@@ -25,6 +26,12 @@ def index():
     return render_template("index.html",
                            user_count=user_count, recipe_count=recipe_count
                            )
+
+@app.template_filter()
+def show_lines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    return markupsafe.Markup(content)
 
 # Show all recipes page
 @app.route("/recipes")

@@ -16,7 +16,7 @@
   👎 -{{ recipe_votes | selectattr("vote", "equalto", -1) | list | count }}
 </p>
 <p>
-  {{ recipe.description }}
+  {{ recipe.description | show_lines }}
 </p>
 {% if classes %}
 <p>
