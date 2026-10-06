@@ -81,15 +81,15 @@ def create():
         error_msg = "VIRHE: salasanat eivät ole samat"
         return render_template("/register.html", error_msg=error_msg)
     if not password1.strip():
-        error_msg = "VIRHE: epäkelpo salasana, salasana ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä."
+        error_msg = "VIRHE: Salasana ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä."
         return render_template("/register.html", error_msg=error_msg)
-    elif len(password1) < 5:
-        error_msg = "VIRHE: epäkelpo salasana, salasanan on oltava vähintään 5 merkkiä pitkä."
+    if len(password1) < 5:
+        error_msg = "VIRHE: Salasanan on oltava vähintään 5 merkkiä pitkä."
         return render_template("/register.html", error_msg=error_msg)
 
     try:
         if not username.strip():
-            error_msg = "VIRHE: epäkelpo käyttäjänimi, käyttäjänimi ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä."
+            error_msg = "VIRHE: Käyttäjänimi ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä."
             return render_template("/register.html", error_msg=error_msg)
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
@@ -114,7 +114,8 @@ def login():
             session["user_id"] = user_id
             session["username"] = username
             session["csrf_token"] = secrets.token_hex(16)
-            return redirect("/")
+            return render_template("/index.html")
+
         else:
             error_msg = "VIRHE: väärä tunnus tai salasana"
             return render_template("/login.html", error_msg=error_msg)
@@ -243,7 +244,7 @@ def create_recipe():
             classes.append((class_title, class_value))
 
     recipe_id = recipes.add_recipe(title, description, user_id, classes)
-    if recipe_id == None:
+    if recipe_id is None:
         recipe_id = db.last_insert_id()
 
     return redirect("/recipe/" + str(recipe_id))
