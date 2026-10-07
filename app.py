@@ -91,6 +91,9 @@ def create():
         if not username.strip():
             error_msg = "VIRHE: Käyttäjänimi ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä."
             return render_template("/register.html", error_msg=error_msg)
+        if len(username.strip()) < 5 or len(username.strip()) > 21:
+            error_msg = "VIRHE: Käyttäjänimen tulee olla 5 - 20 merkkiä pitkä."
+            return render_template("/register.html", error_msg=error_msg)
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
         error_msg = "VIRHE: tunnus on jo varattu"
@@ -267,6 +270,9 @@ def vote_recipe():
         else:
             abort(400)
 
-    recipes.add_vote(recipe_id, session["user_id"], int(vote))
+    try:
+        recipes.add_vote(recipe_id, session["user_id"], int(vote))
+    except sqlite3.IntegrityError:
+        redirect("/recipe/" + str(recipe_id))
 
     return redirect("/recipe/" + str(recipe_id))
