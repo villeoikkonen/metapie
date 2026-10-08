@@ -24,3 +24,4 @@ def get_user_votes(user_id):
 def remove_vote(recipe_id, user_id):
     sql = "DELETE FROM recipe_votes WHERE recipe_id = ? AND user_id = ?"
     db.execute(sql, [recipe_id, user_id])
+    
