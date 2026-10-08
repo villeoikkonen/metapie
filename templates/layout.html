@@ -26,7 +26,16 @@
     <a href="/register">Luo tunnus</a>
   {% endif %}
   </p>
-  
+  {% if errors %}
+  <div role="alert">
+    <p>Korjaa seuraavat tiedot:</p>
+    <ul>
+      {% for error in errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
   {% block content %}{% endblock %}
 
 </body>

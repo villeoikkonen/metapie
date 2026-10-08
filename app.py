@@ -69,7 +69,7 @@ def show_user(user_id):
     user_recipes = users.get_items(user_id)
     user_votes = recipes.get_user_votes(user_id)
     return render_template("show_user.html",
-                           user=user, recipes=user_recipes, votes=user_votes )
+                           user=user, recipes=user_recipes, votes=user_votes)
 
 # Create new user
 @app.route("/create", methods=["POST"])
@@ -77,29 +77,30 @@ def create():
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
+    errors = []
+
     if password1 != password2:
-        error_msg = "VIRHE: salasanat eivät ole samat"
-        return render_template("/register.html", error_msg=error_msg)
-    if not password1.strip():
-        error_msg = "VIRHE: Salasana ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä."
-        return render_template("/register.html", error_msg=error_msg)
-    if len(password1) < 5:
-        error_msg = "VIRHE: Salasanan on oltava vähintään 5 merkkiä pitkä."
-        return render_template("/register.html", error_msg=error_msg)
+        errors.append("Salasanat eivät ole samat")
+    elif not password1.strip():
+        errors.append("Salasana ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä.")
+    elif len(password1) < 5:
+        errors.append("Salasanan on oltava vähintään 5 merkkiä pitkä.")
+
+    if not username.strip():
+        errors.append("Käyttäjänimi ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä.")
+    elif len(username.strip()) < 5 or len(username.strip()) > 20:
+        errors.append("Käyttäjänimen tulee olla 5 - 20 merkkiä pitkä.")
+
+    if errors:
+        return render_template("/register.html", errors=errors)
 
     try:
-        if not username.strip():
-            error_msg = "VIRHE: Käyttäjänimi ei saa olla tyhjä tai sisältää pelkkiä välilyöntejä."
-            return render_template("/register.html", error_msg=error_msg)
-        if len(username.strip()) < 5 or len(username.strip()) > 21:
-            error_msg = "VIRHE: Käyttäjänimen tulee olla 5 - 20 merkkiä pitkä."
-            return render_template("/register.html", error_msg=error_msg)
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
-        error_msg = "VIRHE: tunnus on jo varattu"
-        return render_template("/register.html", error_msg=error_msg)
+        errors.append("Tunnus on jo varattu")
+        return render_template("/register.html", errors=errors)
 
-    return redirect("/")
+    return redirect("/login")
 
 # Login
 @app.route("/login", methods=["GET", "POST"])
@@ -112,6 +113,7 @@ def login():
         password = request.form["password"]
 
         user_id = users.check_login(username, password)
+        errors = []
 
         if user_id:
             session["user_id"] = user_id
@@ -120,8 +122,8 @@ def login():
             return render_template("/index.html")
 
         else:
-            error_msg = "VIRHE: väärä tunnus tai salasana"
-            return render_template("/login.html", error_msg=error_msg)
+            errors.append("Väärä tunnus tai salasana")
+            return render_template("/login.html", errors=errors)
 
 # Logout
 @app.route("/logout")
@@ -182,11 +184,17 @@ def update_recipe():
     if recipe["user_id"] != session["user_id"]:
         abort(403)
     title = request.form["title"]
-    if not title or len(title) > 50:
-        abort(403)
+    errors = []
+
+    if not title.strip():
+        errors.append("Anna reseptille nimi.")
+    elif len(title) > 50:
+        errors.append("Reseptin nimessä saa olla enintään 50 merkkiä.")
     description = request.form["description"]
-    if not description or len(description) > 1000:
-        abort(403)
+    if not description.strip():
+        errors.append("Anna reseptille kuvaus.")
+    elif len(description) > 1000:
+        errors.append("Kuvauksessa saa olla enintään 1000 merkkiä.")
 
     classes = []
     all_classes = recipes.get_all_classes()
@@ -194,13 +202,19 @@ def update_recipe():
         if entry:
             class_title, class_value = entry.split(":")
             if class_title not in all_classes:
-                abort(403)
+                errors.append("Virheellinen luokittelu.")
+                continue
             if class_value not in all_classes[class_title]:
-                abort(403)
+                errors.append("Virheellinen luokittelu.")
+                continue
             classes.append((class_title, class_value))
 
-    recipes.update_recipe(recipe_id, title, description, classes)
-    return redirect("/recipe/" + str(recipe_id))
+    if not errors:
+        recipes.update_recipe(recipe_id, title, description, classes)
+        return redirect("/recipe/" + str(recipe_id))
+    return render_template("edit_recipe.html",
+                           errors=errors, recipe=recipe,
+                           classes=classes, all_classes=all_classes)
 
 # Remove recipe
 @app.route("/remove_recipe/<int:recipe_id>", methods=["GET", "POST"])
@@ -226,12 +240,17 @@ def remove_recipe(recipe_id):
 def create_recipe():
     require_login()
     check_csrf()
+    errors = []
     title = request.form["title"]
-    if not title.strip() or len(title) > 50:
-        abort(403)
+    if not title.strip():
+        errors.append("Anna reseptille nimi.")
+    elif len(title) > 50:
+        errors.append("Reseptin nimessä saa olla enintään 50 merkkiä.")
     description = request.form["description"]
-    if not description or len(description) > 1000:
-        abort(403)
+    if not description.strip():
+        errors.append("Anna reseptille kuvaus.")
+    elif len(description) > 1000:
+        errors.append("Kuvauksessa saa olla enintään 1000 merkkiä.")
     user_id = session["user_id"]
 
     all_classes = recipes.get_all_classes()
@@ -241,16 +260,23 @@ def create_recipe():
         if entry:
             class_title, class_value = entry.split(":")
             if class_title not in all_classes:
-                abort(403)
+                errors.append("Virheellinen luokittelu.")
+                continue
             if class_value not in all_classes[class_title]:
-                abort(403)
+                errors.append("Virheellinen luokittelu.")
+                continue
             classes.append((class_title, class_value))
+
+    if errors:
+        return render_template("new_recipe.html", errors=errors, classes=all_classes)
 
     recipe_id = recipes.add_recipe(title, description, user_id, classes)
     if recipe_id is None:
         recipe_id = db.last_insert_id()
 
+    recipes.update_recipe(recipe_id, title, description, classes)
     return redirect("/recipe/" + str(recipe_id))
+
 
 # Vote recipe
 @app.route("/vote_recipe", methods=["POST"])
