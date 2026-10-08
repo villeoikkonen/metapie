@@ -7,6 +7,7 @@ import db
 import config
 import recipes
 import users
+import votes
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -79,9 +80,9 @@ def show_recipe(recipe_id):
         abort(404)
     classes = recipes.get_classes(recipe_id)
     user_vote = None
-    recipe_votes = recipes.get_recipe_votes(recipe_id)
+    recipe_votes = votes.get_recipe_votes(recipe_id)
     if "user_id" in session:
-        user_vote = recipes.get_vote(recipe_id, session["user_id"])
+        user_vote = votes.get_vote(recipe_id, session["user_id"])
     return render_template("show_recipe.html",
                            recipe=recipe, classes=classes,
                            user_vote=user_vote, recipe_votes=recipe_votes
@@ -99,7 +100,7 @@ def show_user(user_id):
     if not user:
         abort(404)
     user_recipes = users.get_items(user_id)
-    user_votes = recipes.get_user_votes(user_id)
+    user_votes = votes.get_user_votes(user_id)
     return render_template("show_user.html",
                            user=user, recipes=user_recipes, votes=user_votes)
 
@@ -317,18 +318,18 @@ def vote_recipe():
     recipe_id = request.form["recipe_id"]
     recipe = recipes.get_recipe(recipe_id)
     if not recipe:
-        abort(403)
+        abort(404)
 
     vote = request.form["vote"]
     if vote not in ["1", "-1"]:
         if vote == "0":
-            recipes.remove_vote(recipe_id, session["user_id"])
+            votes.remove_vote(recipe_id, session["user_id"])
             return redirect("/recipe/" + str(recipe_id))
         else:
             abort(400)
 
     try:
-        recipes.add_vote(recipe_id, session["user_id"], int(vote))
+        votes.add_vote(recipe_id, session["user_id"], int(vote))
     except sqlite3.IntegrityError:
         redirect("/recipe/" + str(recipe_id))
 
