@@ -169,7 +169,7 @@ def login():
             session["user_id"] = user_id
             session["username"] = username
             session["csrf_token"] = secrets.token_hex(16)
-            return render_template("/index.html")
+            return redirect("/")
 
         else:
             errors.append("Väärä tunnus tai salasana")
@@ -311,6 +311,9 @@ def create_recipe():
     classes = []
     for entry in request.form.getlist("classes"):
         if entry:
+            if len(entry.split(":")) != 2:
+                errors.append("Virheellinen luokittelu.")
+                continue
             class_title, class_value = entry.split(":")
             if class_title not in all_classes:
                 errors.append("Virheellinen luokittelu.")
