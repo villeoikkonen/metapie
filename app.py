@@ -13,7 +13,7 @@ app.secret_key = config.secret_key
 
 def require_login():
     if "user_id" not in session:
-        abort(403)
+        abort(403, description="Kirjaudu sisään käyttääksesi tätä toimintoa.")
 
 def check_csrf():
     if request.form["csrf_token"] != session["csrf_token"]:
@@ -32,6 +32,38 @@ def show_lines(content):
     content = str(markupsafe.escape(content))
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
+
+@app.errorhandler(400)
+def bad_request(error):
+    return render_template(
+        "error.html",
+        title="Virheellinen pyyntö",
+        message="Pyyntöä ei voitu käsitellä. Avaa lomake uudelleen."
+    ), 400
+
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template(
+        "error.html",
+        title="Toimintoa ei sallittu",
+        message=error.description
+    ), 403
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template(
+        "error.html",
+        title="Sivua ei löytynyt",
+        message="Hakemaasi sivua tai reseptiä ei ole olemassa."
+    ), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template(
+        "error.html",
+        title="Sovelluksessa tapahtui virhe",
+        message="Toimintoa ei voitu suorittaa. Yritä myöhemmin uudelleen."
+    ), 500
 
 # Show all recipes page
 @app.route("/recipes")
@@ -182,7 +214,7 @@ def update_recipe():
     if not recipe:
         abort(404)
     if recipe["user_id"] != session["user_id"]:
-        abort(403)
+        abort(403, description="Voit muokata vain omia reseptejäsi.")
     title = request.form["title"]
     errors = []
 
@@ -224,7 +256,7 @@ def remove_recipe(recipe_id):
     if not recipe:
         abort(404)
     if recipe["user_id"] != session["user_id"]:
-        abort(403)
+        abort(403, description="Voit muokata vain omia reseptejäsi.")
     if request.method == "GET":
         return render_template("remove_recipe.html", recipe=recipe)
     if request.method == "POST":
@@ -276,7 +308,6 @@ def create_recipe():
 
     recipes.update_recipe(recipe_id, title, description, classes)
     return redirect("/recipe/" + str(recipe_id))
-
 
 # Vote recipe
 @app.route("/vote_recipe", methods=["POST"])
