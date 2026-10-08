@@ -1,7 +1,6 @@
 import secrets
 import sqlite3
 import markupsafe
-import time
 import math
 from flask import Flask
 from flask import abort, g, redirect, render_template, request, session
@@ -250,6 +249,9 @@ def update_recipe():
     all_classes = recipes.get_all_classes()
     for entry in request.form.getlist("classes"):
         if entry:
+            if len(entry.split(":")) != 2:
+                errors.append("Virheellinen luokittelu.")
+                continue
             class_title, class_value = entry.split(":")
             if class_title not in all_classes:
                 errors.append("Virheellinen luokittelu.")
