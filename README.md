@@ -77,3 +77,53 @@ python -m flask run
 6. Tarkista reseptin arviomäärät ja oman käyttäjäsivusi tilastot.
 7. Kokeile arvion poistamista.
 8. Kirjaudu alkuperäisellä tunnuksella ja kokeile reseptin poistamista.
+
+## Suuren tietomäärän käsittely
+
+Lisätty seed.py:llä 1 000 käyttäjää, 1 000 000 reseptiä sekä 10 votea per resepti.
+
+### Tilanne ennen sivutusta tai tietokannan indeksiä
+
+Reseptit-sivu muuttuu täydelliseksi katastrofiksi. Kaikki 1 000 000 reseptiä ovat lueteltuna ja sivun lataamisessa kestää:
+
+```elapsed time: 7.71 s
+127.0.0.1 - - [08/Oct/2026 15:48:47] "GET /recipes HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [08/Oct/2026 15:48:47] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 8.87 s
+127.0.0.1 - - [08/Oct/2026 15:50:26] "GET /recipes HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [08/Oct/2026 15:50:30] "GET /static/main.css HTTP/1.1" 304 -
+```
+
+Lisäksi selain ei vastaa sivun latauksen aikana.
+
+### Pelkän indeksoinnin jälkeen
+
+Kun tietokantaan lisätään indeksointi nopeuttamaan recipes.html:n lataamista, nopeutuu tilanne jonkin verran:
+
+```elapsed time: 5.33 s
+127.0.0.1 - - [08/Oct/2026 16:01:31] "GET /recipes HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [08/Oct/2026 16:01:31] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 5.46 s
+127.0.0.1 - - [08/Oct/2026 16:01:42] "GET /recipes HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [08/Oct/2026 16:01:42] "GET /static/main.css HTTP/1.1" 304 -
+```
+
+Pelkkä indeksointi ei kuitenkaan auta, koska selain joutuu kuitenkin käsittelemään 1 000 000 reseptiä ja näyttämään ne, joten tarvitaan sivutus.
+
+### Indeksoinnin ja sivutuksen jälkeen
+
+```elapsed time: 0.03 s
+127.0.0.1 - - [08/Oct/2026 16:28:33] "GET /recipes HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [08/Oct/2026 16:28:33] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 0.03 s
+127.0.0.1 - - [08/Oct/2026 16:28:35] "GET /recipes HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [08/Oct/2026 16:28:35] "GET /static/main.css HTTP/1.1" 304 -
+```
+
+Voidaan huomata miten tietokantakysely SEKÄ sivun muodostaminen muuttuu käytännössä välittömäksi, valtavasta tietokannan koosta huolimatta.

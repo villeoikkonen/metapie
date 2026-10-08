@@ -1,8 +1,10 @@
 import secrets
 import sqlite3
 import markupsafe
+import time
+import math
 from flask import Flask
-from flask import abort, redirect, render_template, request, session
+from flask import abort, g, redirect, render_template, request, session
 import db
 import config
 import recipes
@@ -33,6 +35,16 @@ def show_lines(content):
     content = str(markupsafe.escape(content))
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
+
+@app.before_request
+def before_request():
+    g.start_time = time.time()
+
+@app.after_request
+def after_request(response):
+    elapsed_time = round(time.time() - g.start_time, 2)
+    print("elapsed time:", elapsed_time, "s")
+    return response
 
 @app.errorhandler(400)
 def bad_request(error):
@@ -68,9 +80,24 @@ def internal_error(error):
 
 # Show all recipes page
 @app.route("/recipes")
-def show_recipes():
-    all_recipes = recipes.get_recipes()
-    return render_template("recipes.html", recipes=all_recipes)
+@app.route("/recipes/<int:page>")
+def show_recipes(page=1):
+    page_size = 10
+    recipe_count = recipes.count_recipes()
+    page_count = max(math.ceil(recipe_count / page_size), 1)
+
+    if page < 1:
+        return redirect("/recipes/1")
+    if page > page_count:
+        return redirect("/recipes/" + str(page_count))
+
+    all_recipes = recipes.get_recipes(page, page_size)
+
+    return render_template(
+        "recipes.html",
+        recipes=all_recipes,
+        page=page,
+        page_count=page_count)
 
 # Show recipe page
 @app.route("/recipe/<int:recipe_id>")

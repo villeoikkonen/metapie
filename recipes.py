@@ -16,7 +16,7 @@ def count_recipes():
     result = db.query(sql)
     return result[0]["total"]
 
-def get_recipes():
+def get_recipes(page, page_size):
     sql = """SELECT recipes.id,
                     recipes.title,
                     users.id user_id,
@@ -31,8 +31,11 @@ def get_recipes():
                        AND vote = -1) AS dislikes
              FROM recipes, users
              WHERE recipes.user_id = users.id
-             ORDER BY recipes.id DESC"""
-    return db.query(sql)
+             ORDER BY recipes.id DESC
+             LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = (page - 1) * page_size
+    return db.query(sql, [limit, offset])
 
 def get_all_classes():
     sql = "SELECT title, value FROM classes ORDER BY id"

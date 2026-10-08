@@ -39,3 +39,6 @@ CREATE TABLE recipe_votes (
     vote INTEGER CHECK (vote IN (-1, 1)),
     UNIQUE (recipe_id, user_id)
 );
+
+CREATE INDEX idx_votes_recipe_vote
+ON recipe_votes (recipe_id, vote);
