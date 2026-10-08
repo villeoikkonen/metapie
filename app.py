@@ -1,9 +1,9 @@
 import secrets
 import sqlite3
-import markupsafe
 import math
+import markupsafe
 from flask import Flask
-from flask import abort, g, redirect, render_template, request, session
+from flask import abort, redirect, render_template, request, session
 import db
 import config
 import recipes
@@ -142,6 +142,7 @@ def create():
 
     if errors:
         return render_template("/register.html", errors=errors)
+    username = username.strip()
 
     try:
         users.create_user(username, password1)
