@@ -36,16 +36,6 @@ def show_lines(content):
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
 
-@app.before_request
-def before_request():
-    g.start_time = time.time()
-
-@app.after_request
-def after_request(response):
-    elapsed_time = round(time.time() - g.start_time, 2)
-    print("elapsed time:", elapsed_time, "s")
-    return response
-
 @app.errorhandler(400)
 def bad_request(error):
     return render_template(
