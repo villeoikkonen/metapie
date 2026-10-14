@@ -2,7 +2,8 @@
 
 Pylint antaa seuraavan raportin sovelluksen .py-tiedostoista.
 
-```(venv) (base) wilmo@Villes-Mac-studio metapie % pylint *.py
+```
+(venv) (base) wilmo@Villes-Mac-studio metapie % pylint *.py
 ************* Module app
 app.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 app.py:16:0: C0116: Missing function or method docstring (missing-function-docstring)
@@ -46,25 +47,15 @@ db.py:10:0: W0102: Dangerous default value [] as argument (dangerous-default-val
 db.py:17:0: C0116: Missing function or method docstring (missing-function-docstring)
 db.py:20:0: C0116: Missing function or method docstring (missing-function-docstring)
 db.py:20:0: W0102: Dangerous default value [] as argument (dangerous-default-value)
-************* Module ingredients
-ingredients.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-ingredients.py:3:0: C0116: Missing function or method docstring (missing-function-docstring)
-ingredients.py:7:0: C0116: Missing function or method docstring (missing-function-docstring)
-ingredients.py:11:0: C0116: Missing function or method docstring (missing-function-docstring)
-ingredients.py:19:0: C0116: Missing function or method docstring (missing-function-docstring)
-ingredients.py:26:0: C0116: Missing function or method docstring (missing-function-docstring)
-ingredients.py:30:0: W0105: String statement has no effect (pointless-string-statement)
 ************* Module recipes
 recipes.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 recipes.py:3:0: C0116: Missing function or method docstring (missing-function-docstring)
-recipes.py:10:8: R1704: Redefining argument with the local name 'title' (redefined-argument-from-local)
 recipes.py:14:0: C0116: Missing function or method docstring (missing-function-docstring)
 recipes.py:19:0: C0116: Missing function or method docstring (missing-function-docstring)
 recipes.py:40:0: C0116: Missing function or method docstring (missing-function-docstring)
 recipes.py:50:0: C0116: Missing function or method docstring (missing-function-docstring)
 recipes.py:54:0: C0116: Missing function or method docstring (missing-function-docstring)
 recipes.py:66:0: C0116: Missing function or method docstring (missing-function-docstring)
-recipes.py:75:8: R1704: Redefining argument with the local name 'title' (redefined-argument-from-local)
 recipes.py:78:0: C0116: Missing function or method docstring (missing-function-docstring)
 recipes.py:82:0: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module seed
@@ -96,7 +87,8 @@ Käydään raportin sisältö läpi ja perustellaan, miksi kyseisiä asioita ei 
 ## Docstring-ilmoitukset
 
 Suurin osa raportin ilmoituksista on seuraavan kaltaisia:
-```app.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+```
+app.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 app.py:16:0: C0116: Missing function or method docstring (missing-function-docstring)
 ```
 Sovelluksen kehityksessä on seurattu mallisovelluksen päätöstä, jossa moduuleihin ja funktioihin ei ole docstring-kommentteja.
@@ -105,7 +97,8 @@ Sovelluksen kehityksessä on seurattu mallisovelluksen päätöstä, jossa moduu
 
 Raportissa on seuraavat else-haaroihin liittyvät ilmoitukset:
 
-```app.py:168:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+```
+app.py:168:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 app.py:285:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 app.py:348:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 ```
@@ -113,14 +106,17 @@ Jokaisessa tapauksessa kyseessä on koodin selkeyden takia tehty päätös, joss
 
 ## Puuttuva palautusarvo
 
-```app.py:157:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+```
+app.py:157:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
 app.py:274:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
 ```
-Kyseiset ilmoitukset johtuvat siitä, että funktiossa on sekä GET että POST. Käytännössä muun laiset request.methodit eivät ole mahdollisia, koska funktion dekoraattorissa on vaatimuksena että metodi on joko GET tai POST.
+Tässä funktio palauttaa arvon, kun request.method on GET tai POST, mutta periaatteessa voisi tulla tilanne, jossa request.method on jotain muuta eikä koodi palauttaisi arvoa. Käytännössä tällainen tilanne ei ole kuitenkaan mahdollinen, koska funktion dekoraattorissa on vaatimus, että metodin tulee olla GET tai POST. Niinpä tässä tapauksessa ei ole riskiä, että funktio ei jossain tilanteessa palauttaisi arvoa.
+
 
 ## Vakion nimi
 
-```config.py:1:0: C0103: Constant name "secret_key" doesn't conform to UPPER_CASE naming style (invalid-name)
+```
+config.py:1:0: C0103: Constant name "secret_key" doesn't conform to UPPER_CASE naming style (invalid-name)
 seed.py:11:0: C0103: Constant name "user_count" doesn't conform to UPPER_CASE naming style (invalid-name)
 seed.py:12:0: C0103: Constant name "recipe_count" doesn't conform to UPPER_CASE naming style (invalid-name)
 seed.py:13:0: C0103: Constant name "votes_per_recipe" doesn't conform to UPPER_CASE naming style (invalid-name)
@@ -131,11 +127,13 @@ seed.py puolestaan toimii lähinnä apufunktiona suuren tietomäärän luomiseks
 
 ## Vaarallinen oletusarvo
 
-```db.py:10:0: W0102: Dangerous default value [] as argument (dangerous-default-value)
+```
+db.py:10:0: W0102: Dangerous default value [] as argument (dangerous-default-value)
 db.py:20:0: W0102: Dangerous default value [] as argument (dangerous-default-value)
 ```
 Esimerkiksi ensimmäinen ilmoitus koskee seuraavaa funktiota:
-```def execute(sql, params=[]):
+```
+def execute(sql, params=[]):
     con = get_connection()
     result = con.execute(sql, params)
     con.commit()
@@ -148,13 +146,15 @@ Tässä parametrin oletusarvo [] on tyhjä lista. Tässä ongelmaksi voisi tulla
 
 Raportissa on seuraavat ilmoitukset käyttämättömistä argumenteista:
 
-```app.py:39:16: W0613: Unused argument 'error' (unused-argument)
+```
+app.py:39:16: W0613: Unused argument 'error' (unused-argument)
 app.py:55:14: W0613: Unused argument 'error' (unused-argument)
 app.py:63:19: W0613: Unused argument 'error' (unused-argument)
 ```
 Kaikki kolme kohtaa käsittelevät sovelluksen virheilmoituksia, esimerkkinä:
 
-```@app.errorhandler(404)
+```
+@app.errorhandler(404)
 def not_found(error):
     return render_template(
         "error.html",

@@ -83,7 +83,8 @@ Lisätty seed.py:llä 1 000 käyttäjää, 1 000 000 reseptiä sekä 10 votea pe
 
 Reseptit-sivu muuttuu täydelliseksi katastrofiksi. Kaikki 1 000 000 reseptiä ovat lueteltuna ja sivun lataamisessa kestää:
 
-```elapsed time: 7.71 s
+```
+elapsed time: 7.71 s
 127.0.0.1 - - [08/Oct/2026 15:48:47] "GET /recipes HTTP/1.1" 200 -
 elapsed time: 8.87 s
 127.0.0.1 - - [08/Oct/2026 15:50:26] "GET /recipes HTTP/1.1" 200 -
@@ -95,7 +96,8 @@ Lisäksi selain ei vastaa sivun latauksen aikana.
 
 Kun tietokantaan lisätään indeksointi nopeuttamaan recipes.html:n lataamista, nopeutuu tilanne jonkin verran:
 
-```elapsed time: 5.33 s
+```
+elapsed time: 5.33 s
 127.0.0.1 - - [08/Oct/2026 16:01:31] "GET /recipes HTTP/1.1" 200 -
 elapsed time: 5.46 s
 127.0.0.1 - - [08/Oct/2026 16:01:42] "GET /recipes HTTP/1.1" 200 -
@@ -105,7 +107,8 @@ Pelkkä indeksointi ei kuitenkaan auta, koska selain joutuu kuitenkin käsittele
 
 ### Indeksoinnin ja sivutuksen jälkeen
 
-```elapsed time: 0.03 s
+```
+elapsed time: 0.03 s
 127.0.0.1 - - [08/Oct/2026 16:28:33] "GET /recipes HTTP/1.1" 200 -
 elapsed time: 0.03 s
 127.0.0.1 - - [08/Oct/2026 16:28:35] "GET /recipes HTTP/1.1" 200 -
