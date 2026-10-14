@@ -265,7 +265,7 @@ def update_recipe():
     if not errors:
         recipes.update_recipe(recipe_id, title, description, classes)
         return redirect("/recipe/" + str(recipe_id))
-    
+
     form_recipe = {
         "id": recipe_id,
         "title": title,

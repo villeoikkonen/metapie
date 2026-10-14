@@ -3,7 +3,6 @@
 Pylint antaa seuraavan raportin sovelluksen .py-tiedostoista.
 
 ```
-(venv) (base) wilmo@Villes-Mac-studio metapie % pylint *.py
 ************* Module app
 app.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 app.py:16:0: C0116: Missing function or method docstring (missing-function-docstring)
@@ -30,12 +29,12 @@ app.py:188:0: C0116: Missing function or method docstring (missing-function-docs
 app.py:199:0: C0116: Missing function or method docstring (missing-function-docstring)
 app.py:206:0: C0116: Missing function or method docstring (missing-function-docstring)
 app.py:227:0: C0116: Missing function or method docstring (missing-function-docstring)
-app.py:274:0: C0116: Missing function or method docstring (missing-function-docstring)
-app.py:285:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-app.py:274:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
-app.py:293:0: C0116: Missing function or method docstring (missing-function-docstring)
-app.py:338:0: C0116: Missing function or method docstring (missing-function-docstring)
-app.py:348:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+app.py:286:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:297:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+app.py:286:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+app.py:305:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:350:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:360:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 ************* Module config
 config.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 config.py:1:0: C0103: Constant name "secret_key" doesn't conform to UPPER_CASE naming style (invalid-name)
@@ -78,8 +77,8 @@ votes.py:16:0: C0116: Missing function or method docstring (missing-function-doc
 votes.py:20:0: C0116: Missing function or method docstring (missing-function-docstring)
 votes.py:24:0: C0116: Missing function or method docstring (missing-function-docstring)
 
-------------------------------------------------------------------
-Your code has been rated at 8.07/10 (previous run: 7.95/10, +0.12)
+-----------------------------------
+Your code has been rated at 8.25/10
 ```
 
 Käydään raportin sisältö läpi ja perustellaan, miksi kyseisiä asioita ei ole korjattu sovelluksessa.
@@ -163,4 +162,4 @@ def not_found(error):
     ), 404
 ```
 
-Ilmoitukset koskevat 400, 403 ja 500-virheilmoituksien käsittelyä. Nykyisellään sovelluksella ei ole tarvetta useammille ilmoituksille näissä tapauksissa. Virheilmoitusten laajennettavuutta varten säilytetään kuitenkin mahdollisuus tuoda näillekkin virheilmoituksille omat error-messaget.
+Ilmoitukset koskevat 400, 404 ja 500-virheilmoituksien käsittelyä. Nykyisellään sovelluksella ei ole tarvetta useammille ilmoituksille näissä tapauksissa. Virheilmoitusten laajennettavuutta varten säilytetään kuitenkin mahdollisuus tuoda näillekkin virheilmoituksille omat error-messaget.
