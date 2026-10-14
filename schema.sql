@@ -24,14 +24,6 @@ CREATE TABLE recipe_classes (
     value TEXT
 );
 
-CREATE TABLE ingredients (
-    id INTEGER PRIMARY KEY,
-    name TEXT,
-    amount TEXT,
-    unit TEXT,
-    recipe_id INTEGER REFERENCES recipes ON DELETE CASCADE
-);
-
 CREATE TABLE recipe_votes (
     id INTEGER PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipes ON DELETE CASCADE,

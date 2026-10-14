@@ -1,7 +1,6 @@
 # Metapie - reseptikirja mikä vähentää waifun metatyötä. Happy wife, happy life.
 
 *  Sovelluksessa käyttäjät pystyvät jakamaan ruokareseptejään.
-*  (TODO) Resepteihin pystyy lisäämään raaka-aineita.
 *  Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
 *  Käyttäjä pystyy lisäämään reseptejä ja muokkaamaan ja poistamaan niitä.
 *  Käyttäjä näkee sovellukseen lisätyt reseptit.
@@ -9,9 +8,7 @@
 *  Käyttäjä pystyy valitsemaan esimerkiksi seuraavia luokitteluja:
     Ruoan tyyppi: alkuruoka, pääruoka tai jälkiruoka
     Ruokavalio: laktoositon, gluteeniton, vegaaninen tai halal
-*  (TODO) Käyttäjä pystyy luomaan viikottaisen ruokalistan.
 *  Käyttäjä voi tykätä resepteistä.
-*  (TODO) Käyttäjä saa ruokalistan perusteella itselleen kauppalistan tarvittavista aineksista.
 
 ## Asennus ja käynnistys
 
@@ -88,12 +85,8 @@ Reseptit-sivu muuttuu täydelliseksi katastrofiksi. Kaikki 1 000 000 reseptiä o
 
 ```elapsed time: 7.71 s
 127.0.0.1 - - [08/Oct/2026 15:48:47] "GET /recipes HTTP/1.1" 200 -
-elapsed time: 0.0 s
-127.0.0.1 - - [08/Oct/2026 15:48:47] "GET /static/main.css HTTP/1.1" 304 -
 elapsed time: 8.87 s
 127.0.0.1 - - [08/Oct/2026 15:50:26] "GET /recipes HTTP/1.1" 200 -
-elapsed time: 0.0 s
-127.0.0.1 - - [08/Oct/2026 15:50:30] "GET /static/main.css HTTP/1.1" 304 -
 ```
 
 Lisäksi selain ei vastaa sivun latauksen aikana.
@@ -104,12 +97,8 @@ Kun tietokantaan lisätään indeksointi nopeuttamaan recipes.html:n lataamista,
 
 ```elapsed time: 5.33 s
 127.0.0.1 - - [08/Oct/2026 16:01:31] "GET /recipes HTTP/1.1" 200 -
-elapsed time: 0.0 s
-127.0.0.1 - - [08/Oct/2026 16:01:31] "GET /static/main.css HTTP/1.1" 304 -
 elapsed time: 5.46 s
 127.0.0.1 - - [08/Oct/2026 16:01:42] "GET /recipes HTTP/1.1" 200 -
-elapsed time: 0.0 s
-127.0.0.1 - - [08/Oct/2026 16:01:42] "GET /static/main.css HTTP/1.1" 304 -
 ```
 
 Pelkkä indeksointi ei kuitenkaan auta, koska selain joutuu kuitenkin käsittelemään 1 000 000 reseptiä ja näyttämään ne, joten tarvitaan sivutus.
@@ -118,12 +107,8 @@ Pelkkä indeksointi ei kuitenkaan auta, koska selain joutuu kuitenkin käsittele
 
 ```elapsed time: 0.03 s
 127.0.0.1 - - [08/Oct/2026 16:28:33] "GET /recipes HTTP/1.1" 200 -
-elapsed time: 0.0 s
-127.0.0.1 - - [08/Oct/2026 16:28:33] "GET /static/main.css HTTP/1.1" 304 -
 elapsed time: 0.03 s
 127.0.0.1 - - [08/Oct/2026 16:28:35] "GET /recipes HTTP/1.1" 200 -
-elapsed time: 0.0 s
-127.0.0.1 - - [08/Oct/2026 16:28:35] "GET /static/main.css HTTP/1.1" 304 -
 ```
 
 Voidaan huomata miten tietokantakysely SEKÄ sivun muodostaminen muuttuu käytännössä välittömäksi, valtavasta tietokannan koosta huolimatta.
