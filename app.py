@@ -265,9 +265,21 @@ def update_recipe():
     if not errors:
         recipes.update_recipe(recipe_id, title, description, classes)
         return redirect("/recipe/" + str(recipe_id))
-    return render_template("edit_recipe.html",
-                           errors=errors, recipe=recipe,
-                           classes=classes, all_classes=all_classes)
+    
+    form_recipe = {
+        "id": recipe_id,
+        "title": title,
+        "description": description
+    }
+    selected_classes = dict(classes)
+
+    return render_template(
+        "edit_recipe.html",
+        errors=errors,
+        recipe=form_recipe,
+        classes=selected_classes,
+        all_classes=all_classes
+    )
 
 # Remove recipe
 @app.route("/remove_recipe/<int:recipe_id>", methods=["GET", "POST"])

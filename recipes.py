@@ -6,7 +6,7 @@ def add_recipe(title, description, user_id, classes):
 
     recipe_id = db.last_insert_id()
 
-    sql = "INSERT INTO recipe_classes (recipe_id, class_title, value) VALUES (?, ?, ?)"
+    sql = "INSERT INTO recipe_classes (recipe_id, title, value) VALUES (?, ?, ?)"
     for class_title, value in classes:
         db.execute(sql, [recipe_id, class_title, value])
     return recipe_id
@@ -71,7 +71,7 @@ def update_recipe(recipe_id, title, description, classes):
 
     sql = "DELETE FROM recipe_classes WHERE recipe_id = ?"
     db.execute(sql, [recipe_id])
-    sql = "INSERT INTO recipe_classes (recipe_id, class_title, value) VALUES (?, ?, ?)"
+    sql = "INSERT INTO recipe_classes (recipe_id, title, value) VALUES (?, ?, ?)"
     for class_title, value in classes:
         db.execute(sql, [recipe_id, class_title, value])
 
